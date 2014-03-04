@@ -93,7 +93,9 @@ int StartTwoWayComm()
 	{
 		// Prompt the user for an IP connection to which to connect
 		cout << "Enter an IP address of the machine to which to connect: ";
+		cin.ignore(INT_MAX,'\n');
 		cin >> ipAddr;
+		::system("cls");
 
 		// Before sending anything, start a listening thread so can see what
 		// the remote user is saying.
@@ -117,13 +119,11 @@ int StartTwoWayComm()
 			getline(cin, textToSend);
 
 			AddNode(textToSend);
-			++Message::_consoleBuffer;
-			
 			strcpy_s(temp, SEND_BUFFER_SIZE, textToSend.c_str());
 
 			senderSocket.SendData(temp);
 			Sleep(1000);
-		} while (!senderSocket.ShallTerminateNow() || textToSend == "");
+		} while (!senderSocket.ShallTerminateNow() || textToSend == "\n");
 	}
 	catch (...)
 	{
@@ -144,13 +144,13 @@ void RcvdDataCallBack(const char* data, const char* remIPAddr)
 	AddNode(data);
 
 	// Print to the screen what was received
-	cout << endl << data;
+	cout << data << endl;
 }
 
 void AddNode(string message)
 {
 	if (Message::_consoleBuffer >= 25)
-		WashConsole;
+		WashConsole();
 
 	Message* currentMessage = new Message;
 	currentMessage->SetMessage(message);
@@ -222,7 +222,7 @@ char DerpMenu()
 
 	cin >> choice;
 
-	cout << endl;
+	//cout << endl;
 
 	return choice;
 
