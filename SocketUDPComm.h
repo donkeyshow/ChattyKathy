@@ -31,7 +31,7 @@ private:
     int m_inBuffSz;
     //int m_localBindPort;
 
-    void (*m_rcvdDataCallBackPtr)(char*, char*);
+    void (*m_rcvdDataCallBackPtr)(const char*, const char*);
 
     // Define private class methods. These are only called from
     // other class methods and not from "outside" the class.
@@ -99,7 +99,7 @@ public:
     *******************************************************************/
     int StartListenerThread(
         int listenPort,
-        void (*callBackPtr)(char*, char*));
+        void (*callBackPtr)(const char*, const char*));
 
     /*******************************************************************
     // Query if this dll received information that says the application
