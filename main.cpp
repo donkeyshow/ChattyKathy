@@ -8,7 +8,7 @@ using namespace std;
 
 void	RcvdDataCallBack(const char* data, const char* remIPAddr);
 int		StartTwoWayComm();
-int		GetColor();
+char	GetColor();
 char	DerpMenu(); 
 void	AddNode(string message);
 void	ClearData(Node* headNode);
@@ -33,29 +33,29 @@ void main()
 		{
 		case 'A':
 			{
-				int colorChoice = GetColor();
+				char colorChoice = GetColor();
 				
 				switch (colorChoice)
 				{
-				case 1:
+				case '1':
 					::system("color A");
 					break;
-				case 2:
+				case '2':
 					::system("color B");
 					break;
-				case 3:
+				case '3':
 					::system("color C");
 					break;
-				case 4:
+				case '4':
 					::system("color D");
 					break;
-				case 5:
+				case '5':
 					::system("color E");
 					break;
-				case 6:
+				case '6':
 					::system("color F");
 					break;
-				case 7:
+				case '7':
 					::system("color 9");
 					break;
 				default:
@@ -196,9 +196,9 @@ void WashConsole()
 	saveMe->PrintToConsole();
 }
 
-int GetColor()
+char GetColor()
 {
-	int choice;
+	char choice;
 
 	cout << "1: Green" << endl
 		<< "2: Aqua" << endl
