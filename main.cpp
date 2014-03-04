@@ -83,7 +83,7 @@ void main()
 int StartTwoWayComm()
 {
 	char ipAddr[IPADDR_BUFFER_SIZE];
-	char sendBuff[SEND_BUFFER_SIZE];
+	//char sendBuff[SEND_BUFFER_SIZE];
 	CSocketUDPComm senderSocket;
 	int retVal = 0;
 	string textToSend;
@@ -108,16 +108,17 @@ int StartTwoWayComm()
 		}
 
 		int cnt = 1;
-		while (!senderSocket.ShallTerminateNow())
+		do 
 		{
 			cin.ignore(INT_MAX,'\n');
 			getline(cin, textToSend);
 
 			AddNode(textToSend);
-			
+			++Message::_consoleBuffer;
+
 			senderSocket.SendData(textToSend);
 			Sleep(1000);
-		}
+		} while (!senderSocket.ShallTerminateNow() || textToSend == "");
 	}
 	catch (...)
 	{
@@ -172,7 +173,7 @@ void WashConsole()
 {
 	Node* headNode = messageList.GetFirstNode();
 	Node* tailNode = messageList.GetLastNode();
-	string currentData = ((Message*)tailNode->_data).GetMessage();
+	string currentData = ((Message*)tailNode->_data)->GetMessage();
 	
 	ClearData(headNode);
 
