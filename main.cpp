@@ -191,7 +191,6 @@ void WashConsole()
 	Message* saveMe = new Message;
 	saveMe->SetMessage(currentData);
 	messageList.AddLinkToBack(saveMe);
-	saveMe->AppendToLog();
 	++Message::_consoleBuffer;
 
 	::system("cls");
