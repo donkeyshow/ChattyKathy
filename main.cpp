@@ -57,13 +57,22 @@ void main()
     makeFile.append(Message::_logFilePath);
     system(makeFile.c_str());
     logFile.open(Message::_logFilePath.c_str(), fstream::out);
-    logFile << "Chat started: "
-    << now->tm_mday << "/"
-    << (now->tm_mon + 1)
-    << "/" << (now->tm_year + 1900) << " "
-    << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec
-    << endl;
-    logFile.close();
+    if(!logFile){
+    	cout << "Log file was not created. It should have been named: "
+    	     << Message::_logFilePath << " in directory: "
+    	     << tempFilePath << endl;
+    	cout << "Continuing with chat regardless" << endl;
+    	system("@timeout 3");
+    }
+    else{
+	    logFile << "Chat started: "
+	    << now->tm_mday << "/"
+	    << (now->tm_mon + 1)
+	    << "/" << (now->tm_year + 1900) << " "
+	    << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec
+	    << endl;
+	    logFile.close();
+	}
 
 
     g_consoleHndl = GetStdHandle(STD_OUTPUT_HANDLE); //gets handle on window for UI changes
