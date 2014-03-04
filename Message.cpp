@@ -1,13 +1,14 @@
 #include "Message.h"
 
 string Message::_logFilePath = string();
+int Message::_consoleBuffer = 0;
 
 Message::Message()
 {
 
 }
 
-const string Message::GetMessage()
+const string Message::GetChatMessage()
 {
 	return _message;
 }
@@ -21,7 +22,7 @@ void Message::AppendToLog()
 {
 	std::fstream fs; // create a file stream object
 
-	fs.open(Message::_logFilePath, std::fstream::in | std::fstream::out | std::fstream::app); // open the shell file for read write and append
+	fs.open(Message::_logFilePath.c_str(), std::fstream::app); // open the shell file for read write and append
 
 	fs << this->_message << endl; // output song path to file
 
