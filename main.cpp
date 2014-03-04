@@ -118,7 +118,7 @@ int StartTwoWayComm()
 
 			strcpy_s(temp, SEND_BUFFER_SIZE, textToSend.c_str());
 			
-			if(temp[0] == '\n')
+			if(temp[0] == 0)
 				break;
 			
 			AddNode(textToSend);
