@@ -3,6 +3,8 @@
 #include "SocketUDPComm.h"
 #include "LinkedList.h"
 #include "Message.h"
+#include <fstream>
+#include <ctime>
 
 using namespace std;
 
@@ -20,8 +22,53 @@ const int IPADDR_BUFFER_SIZE = 16;
 const int SEND_BUFFER_SIZE = 1024;
 int g_remoteSendPort = 55551;
 
+HANDLE g_consoleHndl; //console window handle
+COORD pos1 = {1, 22};
+COORD pos2 = {12, 12};
+string userColor = "color 9";
+strintg defaultColor = "color";
+
 void main()
 {
+	///////////////
+	//This creates a log file in the directory of the executable with the current date
+	//and writes "chat started: current date and time" to it
+	///////////////
+	string tempFilePath;
+    ifstream inFile;
+    ofstream outFile;
+    ofstream logFile;
+    time_t t = time(0);   // get time now
+    struct tm * now = localtime( & t );
+    system("echo %cd%\\chatLog> filePath.txt");
+    inFile.open("filePath.txt");
+    getline(inFile,tempFilePath);
+    inFile.close();
+    outFile.open("filePath.txt", fstream::out);
+    outFile << tempFilePath << now->tm_mday
+    << (now->tm_mon + 1)
+    << (now->tm_year + 1900) << ".txt" << endl;
+    outFile.close();
+    inFile.open("filePath.txt");
+    getline(inFile,Message::_logFilePath);
+    inFile.close();
+    system("del filePath.txt");
+    string makeFile = "echo. > ";
+    makeFile.append(Message::_logFilePath);
+    system(makeFile.c_str());
+    logFile.open(Message::_logFilePath.c_str(), fstream::out);
+    logFile << "Chat started: "
+    << now->tm_mday << "/"
+    << (now->tm_mon + 1)
+    << "/" << (now->tm_year + 1900) << " "
+    << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec
+    << endl;
+    logFile.close();
+
+
+    g_consoleHndl = GetStdHandle(STD_OUTPUT_HANDLE); //gets handle on window for UI changes
+    
+
 	// create linked list var to hold messages
 	char menuChoice;
 		
@@ -38,30 +85,38 @@ void main()
 				switch (colorChoice)
 				{
 				case '1':
-					::system("color A");
+					userColor = "color A";
+					//::system("color A");
 					break;
 				case '2':
-					::system("color B");
+					userColor = "color B";
+					//::system("color B");
 					break;
 				case '3':
-					::system("color C");
+					userColor = "color C";
+					//::system("color C");
 					break;
 				case '4':
-					::system("color D");
+					userColor = "color D";
+					//::system("color D");
 					break;
 				case '5':
-					::system("color E");
+					userColor = "color E";
+					//::system("color E");
 					break;
 				case '6':
-					::system("color F");
+					userColor = "color F";
+					//::system("color F");
 					break;
 				case '7':
-					::system("color 9");
+					userColor = "color 9";
+					//::system("color 9");
 					break;
 				default:
 					cout << "Not a valid option. defaulting to blue." << endl;
 					colorChoice = 0;
-					::system("color 9");
+					//this is clobally set regardless
+					//::system("color 9");
 					break;
 				}
 					// Uncomment one only and set the correct IP addr for sender
@@ -114,6 +169,11 @@ int StartTwoWayComm()
 		do 
 		{
 			textToSend.clear();
+
+			system(userColor.c_str()); // set our color to globally defined user color
+
+			SetConsoleCursorPosition(g_consoleHndl, pos1); //set our position to bottom left
+
 			getline(cin, textToSend);
 
 			strcpy_s(temp, SEND_BUFFER_SIZE, textToSend.c_str());
@@ -145,6 +205,10 @@ void RcvdDataCallBack(const char* data, const char* remIPAddr)
 	// if not full, add node only
 	// Store received data in linked list
 	AddNode(data);
+
+	system(defaultColor.c_str()); // set their color to system defined default color
+
+	SetConsoleCursorPosition(g_consoleHndl, pos2); //set their position to middle right
 
 	// Print to the screen what was received
 	cout << data << endl;
