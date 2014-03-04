@@ -86,6 +86,7 @@ int StartTwoWayComm()
 	char sendBuff[SEND_BUFFER_SIZE];
 	CSocketUDPComm senderSocket;
 	int retVal = 0;
+	string textToSend;
 
 	try
 	{
@@ -109,8 +110,12 @@ int StartTwoWayComm()
 		int cnt = 1;
 		while (!senderSocket.ShallTerminateNow())
 		{
-			sprintf_s(sendBuff, SEND_BUFFER_SIZE, "%s %d", "Hello", cnt++);
-			senderSocket.SendData(sendBuff);
+			cin.ignore(INT_MAX,'\n');
+			getline(cin, textToSend);
+
+			AddNode(textToSend);
+			
+			senderSocket.SendData(textToSend);
 			Sleep(1000);
 		}
 	}
