@@ -152,7 +152,7 @@ void RcvdDataCallBack(const char* data, const char* remIPAddr)
 
 void AddNode(string message)
 {
-	if (Message::_consoleBuffer >= 25)
+	if (Message::_consoleBuffer >= 24)
 		WashConsole();
 
 	Message* currentMessage = new Message;
