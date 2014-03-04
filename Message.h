@@ -19,7 +19,7 @@ public:
 
 	Message();
 	~Message();
-	const string GetMessage();
+	const	string GetChatMessage();
 	void	SetMessage(string message);
 	void	AppendToLog();
 	void	PrintToConsole();
