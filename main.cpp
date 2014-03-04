@@ -7,7 +7,7 @@
 using namespace std;
 
 void	RcvdDataCallBack(const char* data, const char* remIPAddr);
-int		StartTwoWayComm();
+int	StartTwoWayComm();
 char	GetColor();
 char	DerpMenu(); 
 void	AddNode(string message);
