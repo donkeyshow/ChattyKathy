@@ -93,7 +93,6 @@ int StartTwoWayComm()
 	{
 		// Prompt the user for an IP connection to which to connect
 		cout << "Enter an IP address of the machine to which to connect: ";
-		cin.ignore(INT_MAX,'\n');
 		cin >> ipAddr;
 		::system("cls");
 
@@ -110,20 +109,24 @@ int StartTwoWayComm()
 			throw;
 		}
 
-		int cnt = 1;
+		cin.ignore(INT_MAX,'\n');
+
 		do 
 		{
-			
-
-			cin.ignore(INT_MAX,'\n');
+			textToSend.clear();
 			getline(cin, textToSend);
 
-			AddNode(textToSend);
 			strcpy_s(temp, SEND_BUFFER_SIZE, textToSend.c_str());
-
+			
+			if(temp[0] == '\n')
+				break;
+			
+			AddNode(textToSend);
+			
 			senderSocket.SendData(temp);
-			Sleep(1000);
-		} while (!senderSocket.ShallTerminateNow() || textToSend == "\n");
+			//Sleep(1000);
+
+		} while (!senderSocket.ShallTerminateNow());
 	}
 	catch (...)
 	{
