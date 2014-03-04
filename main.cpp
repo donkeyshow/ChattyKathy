@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void	RcvdDataCallBack(const string data, const string remIPAddr);
+void	RcvdDataCallBack(const char* data, const char* remIPAddr);
 int		StartTwoWayComm();
 int		GetColor();
 char	DerpMenu(); 
@@ -87,6 +87,7 @@ int StartTwoWayComm()
 	CSocketUDPComm senderSocket;
 	int retVal = 0;
 	string textToSend;
+	char temp[SEND_BUFFER_SIZE];
 
 	try
 	{
@@ -110,13 +111,17 @@ int StartTwoWayComm()
 		int cnt = 1;
 		do 
 		{
+			
+
 			cin.ignore(INT_MAX,'\n');
 			getline(cin, textToSend);
 
 			AddNode(textToSend);
 			++Message::_consoleBuffer;
+			
+			strcpy_s(temp, SEND_BUFFER_SIZE, textToSend.c_str());
 
-			senderSocket.SendData(textToSend.c_str());
+			senderSocket.SendData(temp);
 			Sleep(1000);
 		} while (!senderSocket.ShallTerminateNow() || textToSend == "");
 	}
@@ -130,7 +135,7 @@ int StartTwoWayComm()
 	return retVal;
 }
 
-void RcvdDataCallBack(char* data, char* remIPAddr)
+void RcvdDataCallBack(const char* data, const char* remIPAddr)
 {
 	// implement device to check _consoleBuffer for full
 	// if it is full, wash the console, then add a new node with the current data
@@ -144,6 +149,9 @@ void RcvdDataCallBack(char* data, char* remIPAddr)
 
 void AddNode(string message)
 {
+	if (Message::_consoleBuffer >= 25)
+		WashConsole;
+
 	Message* currentMessage = new Message;
 	currentMessage->SetMessage(message);
 	messageList.AddLinkToBack(currentMessage);
@@ -173,7 +181,7 @@ void WashConsole()
 {
 	Node* headNode = messageList.GetFirstNode();
 	Node* tailNode = messageList.GetLastNode();
-	string currentData = ((Message*)tailNode->_data)->GetMessage();
+	string currentData = ((Message*)tailNode->_data)->GetChatMessage();
 	
 	ClearData(headNode);
 
