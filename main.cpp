@@ -116,7 +116,7 @@ int StartTwoWayComm()
 			AddNode(textToSend);
 			++Message::_consoleBuffer;
 
-			senderSocket.SendData(textToSend);
+			senderSocket.SendData(textToSend.c_str());
 			Sleep(1000);
 		} while (!senderSocket.ShallTerminateNow() || textToSend == "");
 	}
@@ -130,7 +130,7 @@ int StartTwoWayComm()
 	return retVal;
 }
 
-void RcvdDataCallBack(const string data, const string remIPAddr)
+void RcvdDataCallBack(char* data, char* remIPAddr)
 {
 	// implement device to check _consoleBuffer for full
 	// if it is full, wash the console, then add a new node with the current data
