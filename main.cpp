@@ -38,22 +38,22 @@ void main()
 				switch (colorChoice)
 				{
 				case 1:
-					::system("color 2");
+					::system("color A");
 					break;
 				case 2:
-					::system("color 3");
+					::system("color B");
 					break;
 				case 3:
-					::system("color 4");
+					::system("color C");
 					break;
 				case 4:
-					::system("color 5");
+					::system("color D");
 					break;
 				case 5:
-					::system("color 6");
+					::system("color E");
 					break;
 				case 6:
-					::system("color 8");
+					::system("color F");
 					break;
 				case 7:
 					::system("color 9");
@@ -205,7 +205,7 @@ int GetColor()
 		<< "3: Red" << endl
 		<< "4: Purple" << endl
 		<< "5: Yellow" << endl
-		<< "6: Gray" << endl
+		<< "6: White" << endl
 		<< "7: Blue" << endl;
 
 	cin >> choice;
@@ -225,5 +225,4 @@ char DerpMenu()
 	//cout << endl;
 
 	return choice;
-
 }
