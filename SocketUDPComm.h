@@ -10,16 +10,13 @@
 #define SOCKETUDPCOMM_API __declspec(dllimport)
 #endif
 
-using namespace std;
-
 #include <stdio.h>
-#include <string>
 #include <winsock2.h>
 
 class SOCKETUDPCOMM_API CSocketUDPComm
 {
 private:
-    static const int BIND_LOCAL_SEND_PORT = 55557;
+	static const int BIND_LOCAL_SEND_PORT = 55557;
     static const int INOUT_BUFFER_SIZE = 8192;
 
     WSADATA m_wsaData;
@@ -34,7 +31,7 @@ private:
     int m_inBuffSz;
     //int m_localBindPort;
 
-    void (*m_rcvdDataCallBackPtr)(const string, const string);
+    void (*m_rcvdDataCallBackPtr)(char*, char*);
 
     // Define private class methods. These are only called from
     // other class methods and not from "outside" the class.
@@ -70,24 +67,24 @@ public:
     // and port number of the remote computer to which to connect. Note
     // that the remote system must be listening on that port for comm to
     // work. The local port that the system uses (binds to) through
-    // which to send the packet can be specified as an optional default
-    // parameter. If creating multiple instances of this class, this
-    // parameter should be used since only a single app may bind to a
-    // port on a system.
+	// which to send the packet can be specified as an optional default
+	// parameter. If creating multiple instances of this class, this
+	// parameter should be used since only a single app may bind to a
+	// port on a system.
     //
     // Returns 0 if all OK or -1 on error.
     *******************************************************************/
     int InitializeSenderSocket(
-        string remoteIPAddr,
-        int sendPort,
-        int localSendingBindPort = BIND_LOCAL_SEND_PORT);
+		char* remoteIPAddr,
+		int sendPort,
+		int localSendingBindPort = BIND_LOCAL_SEND_PORT);
 
     /*******************************************************************
     // Pass in the data to be sent to the remote system.
     //
     // Returns 0 if all OK or -1 on error.
     *******************************************************************/
-    int SendData(string dataToSend);
+    int SendData(char* dataToSend);
 
     /*******************************************************************
     // This method must be called to receive any data from a remote
@@ -102,7 +99,7 @@ public:
     *******************************************************************/
     int StartListenerThread(
         int listenPort,
-        void (*callBackPtr)(const string, const string));
+        void (*callBackPtr)(char*, char*));
 
     /*******************************************************************
     // Query if this dll received information that says the application
@@ -124,5 +121,3 @@ public:
         m_terminateNow = val;
     }
 };
-
-
