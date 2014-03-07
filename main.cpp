@@ -267,8 +267,7 @@ bool	CreateLog()
 
 string ExePath()
 {
-	string tempString;
-	string filePath;
+	string tempString, filePath;
 	char buffer[MAX_PATH_SIZE];
 
 	GetModuleFileName(NULL, buffer, MAX_PATH_SIZE);
@@ -281,14 +280,7 @@ string ExePath()
 		tempString.push_back(buffer[i]);
 	}
 	
-	auto startiterator = tempString.rend() - tempString.find_last_of('\\');
-
-	for (std::string::reverse_iterator iter = startiterator; iter != tempString.rend(); ++iter) // step backwards from the . to the first \ and save as name
-	{
-		filePath.push_back(*iter);
-	}
-
-	reverse(filePath.begin(), filePath.end());
-
+	filePath = tempString.substr(0, tempString.find_last_of("\\"));
+	
 	return filePath;
 }
