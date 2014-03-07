@@ -1,86 +1,47 @@
+/*
+In class group project:
+name: Bryan Wales, Brit Cornwell, Casey Benson
+date: 02/24/2014
+assignment: 5
+description: This program initializes a UDP socket to send chat messages back and forth between two IP addresses.  When a message is sent or received,
+it is added to a linked list, and appended to a log file.
+sources: see name, cplusplus.com
+*/
+
 #include <iostream>
 #include <string>
 #include "SocketUDPComm.h"
 #include "LinkedList.h"
 #include "Message.h"
 #include <fstream>
-#include <ctime>
+#include <algorithm>
 
 using namespace std;
 
 void	RcvdDataCallBack(const char* data, const char* remIPAddr);
-int	StartTwoWayComm();
+int		StartTwoWayComm();
 char	GetColor();
 char	DerpMenu(); 
 void	AddNode(string message);
 void	ClearData(Node* headNode);
 void	WashConsole();
+bool	CreateLog();
+string	ExePath();
 
 LinkedList messageList;
 
 const int IPADDR_BUFFER_SIZE = 16;
 const int SEND_BUFFER_SIZE = 1024;
+const int MAX_PATH_SIZE = 4096;
 int g_remoteSendPort = 55551;
-
-HANDLE g_consoleHndl; //console window handle
-COORD pos1 = {1, 22};
-COORD pos2 = {12, 12};
 string userColor = "color 9";
-strintg defaultColor = "color";
+string defaultColor = "color";
 
 void main()
 {
-	///////////////
-	//This creates a log file in the directory of the executable with the current date
-	//and writes "chat started: current date and time" to it
-	///////////////
-	string tempFilePath;
-    ifstream inFile;
-    ofstream outFile;
-    ofstream logFile;
-    time_t t = time(0);   // get time now
-    struct tm * now = localtime( & t );
-    system("echo %cd%\\chatLog> filePath.txt");
-    inFile.open("filePath.txt");
-    getline(inFile,tempFilePath);
-    inFile.close();
-    outFile.open("filePath.txt", fstream::out);
-    outFile << tempFilePath << now->tm_mday
-    << (now->tm_mon + 1)
-    << (now->tm_year + 1900) << ".txt" << endl;
-    outFile.close();
-    inFile.open("filePath.txt");
-    getline(inFile,Message::_logFilePath);
-    inFile.close();
-    system("del filePath.txt");
-    string makeFile = "echo. > ";
-    makeFile.append(Message::_logFilePath);
-    system(makeFile.c_str());
-    logFile.open(Message::_logFilePath.c_str(), fstream::out);
-    if(!logFile){
-    	cout << "Log file was not created. It should have been named: "
-    	     << Message::_logFilePath << " in directory: "
-    	     << tempFilePath << endl;
-    	cout << "Continuing with chat regardless" << endl;
-    	system("@timeout 3");
-    }
-    else{
-	    logFile << "Chat started: "
-	    << now->tm_mday << "/"
-	    << (now->tm_mon + 1)
-	    << "/" << (now->tm_year + 1900) << " "
-	    << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec
-	    << endl;
-	    logFile.close();
-	}
-
-
-    g_consoleHndl = GetStdHandle(STD_OUTPUT_HANDLE); //gets handle on window for UI changes
-    
-
 	// create linked list var to hold messages
 	char menuChoice;
-		
+
 	do 
 	{
 		menuChoice = toupper(DerpMenu());
@@ -90,48 +51,40 @@ void main()
 		case 'A':
 			{
 				char colorChoice = GetColor();
-				
+
 				switch (colorChoice)
 				{
 				case '1':
 					userColor = "color A";
-					//::system("color A");
 					break;
 				case '2':
 					userColor = "color B";
-					//::system("color B");
 					break;
 				case '3':
 					userColor = "color C";
-					//::system("color C");
 					break;
 				case '4':
 					userColor = "color D";
-					//::system("color D");
 					break;
 				case '5':
 					userColor = "color E";
-					//::system("color E");
 					break;
 				case '6':
 					userColor = "color F";
-					//::system("color F");
 					break;
 				case '7':
 					userColor = "color 9";
-					//::system("color 9");
 					break;
 				default:
 					cout << "Not a valid option. defaulting to blue." << endl;
 					colorChoice = 0;
-					//this is clobally set regardless
+					//this is globally set regardless
 					//::system("color 9");
 					break;
 				}
-					// Uncomment one only and set the correct IP addr for sender
-					// once we get user input, clear the screen to get full message buffer potential
-					::system("cls");
-					StartTwoWayComm();
+				// Uncomment one only and set the correct IP addr for sender
+				CreateLog();
+				StartTwoWayComm();
 			}
 			break;
 		case 'B':
@@ -147,7 +100,6 @@ void main()
 int StartTwoWayComm()
 {
 	char ipAddr[IPADDR_BUFFER_SIZE];
-	//char sendBuff[SEND_BUFFER_SIZE];
 	CSocketUDPComm senderSocket;
 	int retVal = 0;
 	string textToSend;
@@ -158,7 +110,7 @@ int StartTwoWayComm()
 		// Prompt the user for an IP connection to which to connect
 		cout << "Enter an IP address of the machine to which to connect: ";
 		cin >> ipAddr;
-		::system("cls");
+		::system("cls"); // clear the screen after the final input to have a fresh console window
 
 		// Before sending anything, start a listening thread so can see what
 		// the remote user is saying.
@@ -177,22 +129,20 @@ int StartTwoWayComm()
 
 		do 
 		{
-			textToSend.clear();
+			textToSend.clear(); // clear the input string
 
 			system(userColor.c_str()); // set our color to globally defined user color
 
-			SetConsoleCursorPosition(g_consoleHndl, pos1); //set our position to bottom left
+			getline(cin, textToSend); // get user input
 
-			getline(cin, textToSend);
+			strcpy_s(temp, SEND_BUFFER_SIZE, textToSend.c_str()); // convert to c string
 
-			strcpy_s(temp, SEND_BUFFER_SIZE, textToSend.c_str());
-			
-			if(temp[0] == 0)
+			if(temp[0] == 0) // if empty string, terminate loop
 				break;
-			
-			AddNode(textToSend);
-			
-			senderSocket.SendData(temp);
+
+			AddNode(textToSend); // add to linked list
+
+			senderSocket.SendData(temp); // send the message to the other user
 			//Sleep(1000);
 
 		} while (!senderSocket.ShallTerminateNow());
@@ -209,30 +159,23 @@ int StartTwoWayComm()
 
 void RcvdDataCallBack(const char* data, const char* remIPAddr)
 {
-	// implement device to check _consoleBuffer for full
-	// if it is full, wash the console, then add a new node with the current data
-	// if not full, add node only
-	// Store received data in linked list
-	AddNode(data);
+	AddNode(data); // add the received data to the linked list
 
 	system(defaultColor.c_str()); // set their color to system defined default color
-
-	SetConsoleCursorPosition(g_consoleHndl, pos2); //set their position to middle right
-
-	// Print to the screen what was received
-	cout << data << endl;
+		
+	cout << data << endl; // Print to the screen what was received
 }
 
 void AddNode(string message)
 {
-	if (Message::_consoleBuffer >= 24)
-		WashConsole();
+	if (Message::_consoleBuffer >= 24) // check to see if console is full
+		WashConsole(); // if so, WashConsole
 
-	Message* currentMessage = new Message;
-	currentMessage->SetMessage(message);
-	messageList.AddLinkToBack(currentMessage);
-	currentMessage->AppendToLog();
-	++Message::_consoleBuffer;
+	Message* currentMessage = new Message; // create a pointer to a new message object
+	currentMessage->SetMessage(message); // store the current text as the message object data
+	messageList.AddLinkToBack(currentMessage); // add the message to the linked list
+	currentMessage->AppendToLog(); // add the message to the log file
+	++Message::_consoleBuffer; // increment message count
 }
 
 void ClearData( Node* headNode)
@@ -255,23 +198,23 @@ void ClearData( Node* headNode)
 
 void WashConsole()
 {
-	Node* headNode = messageList.GetFirstNode();
-	Node* tailNode = messageList.GetLastNode();
-	string currentData = ((Message*)tailNode->_data)->GetChatMessage();
-	
-	ClearData(headNode);
+	Node* headNode = messageList.GetFirstNode(); // get first node and store it in a node pointer
+	Node* tailNode = messageList.GetLastNode(); // get last node and store it in a node pointer
+	string currentData = ((Message*)tailNode->_data)->GetChatMessage(); // get the data in the last node and store it in a string
 
-	Message* saveMe = new Message;
-	saveMe->SetMessage(currentData);
-	messageList.AddLinkToBack(saveMe);
-	++Message::_consoleBuffer;
+	ClearData(headNode); // clear the linked list
 
-	::system("cls");
+	Message* saveMe = new Message; // create a pointer to a new message object
+	saveMe->SetMessage(currentData); // store the saved text as message object data
+	messageList.AddLinkToBack(saveMe); // add the message to the linked list
+	++Message::_consoleBuffer; // increment message count
 
-	saveMe->PrintToConsole();
+	::system("cls"); // clear the screen
+
+	saveMe->PrintToConsole(); // output the message
 }
 
-char GetColor()
+char GetColor() // get the console color from the user
 {
 	char choice;
 
@@ -288,7 +231,7 @@ char GetColor()
 	return choice;
 }
 
-char DerpMenu()
+char DerpMenu() // generic choice function
 {
 	char choice;
 
@@ -300,4 +243,52 @@ char DerpMenu()
 	//cout << endl;
 
 	return choice;
+}
+
+bool	CreateLog()
+{
+	ofstream outputFile; // make an outfile object
+	
+	Message::_logFilePath = ExePath(); // all of this because there are bfing spaces in the file path
+	Message::_logFilePath.append("\\");
+	Message::_logFilePath.append("chatlog.txt");
+
+	outputFile.open(Message::_logFilePath, ios::out|ios::trunc); // this will create the file in the working directory
+	
+	if(outputFile.is_open()) // if file was opened
+	{
+		outputFile.flush(); // clear the file
+		outputFile.close(); // close
+		return true; // all is good
+	}
+	cout << " es no good buey " << std::endl;
+	return false;
+}
+
+string ExePath()
+{
+	string tempString;
+	string filePath;
+	char buffer[MAX_PATH_SIZE];
+
+	GetModuleFileName(NULL, buffer, MAX_PATH_SIZE);
+	
+	for (int i = 0; i < MAX_PATH_SIZE; ++i)
+	{
+		if(buffer[i] == NULL)
+			break;
+
+		tempString.push_back(buffer[i]);
+	}
+	
+	auto startiterator = tempString.rend() - tempString.find_last_of('\\');
+
+	for (std::string::reverse_iterator iter = startiterator; iter != tempString.rend(); ++iter) // step backwards from the . to the first \ and save as name
+	{
+		filePath.push_back(*iter);
+	}
+
+	reverse(filePath.begin(), filePath.end());
+
+	return filePath;
 }
