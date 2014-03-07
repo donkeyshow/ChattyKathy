@@ -248,7 +248,7 @@ bool	CreateLog()
 {
 	ofstream outputFile; // make an outfile object
 	
-	Message::_logFilePath = ExePath(); // all of this because there are bfing spaces in the file path
+	Message::_logFilePath = ExePath();
 	Message::_logFilePath.append("\\");
 	Message::_logFilePath.append("chatlog.txt");
 
