@@ -14,7 +14,6 @@ sources: see name, cplusplus.com
 #include "LinkedList.h"
 #include "Message.h"
 #include <fstream>
-#include <algorithm>
 
 using namespace std;
 
