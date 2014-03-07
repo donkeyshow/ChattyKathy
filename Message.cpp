@@ -33,8 +33,7 @@ void Message::AppendToLog()
 	struct tm* newtime = std::localtime(&tt); // create a tm object and store the localtime tt in it
 
 	stringBuffer << std::put_time(newtime, "%H:%M:%S") << " " << std::put_time(newtime, "%x"); // put the local time in the string stream
-	stringBuffer >> std::noskipws; // this doesn't fucking work
-	stringBuffer >> logString >> std::ws >> tempString; // insert the stringstream into logString
+	stringBuffer >> logString >> tempString; // insert the stringstream into logString
 	logString.append(" "); // add a space
 	logString.append(tempString);
 	logString.append(" ");	
