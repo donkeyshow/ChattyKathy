@@ -270,7 +270,7 @@ string ExePath()
 
 	GetModuleFileName(NULL, buffer, SEND_BUFFER_SIZE); // WINDOWS ONLY FUNCTION
 	
-	for (int i = 0; i < MAX_PATH_SIZE; ++i)
+	for (int i = 0; i < SEND_BUFFER_SIZE; ++i)
 	{
 		if(buffer[i] == NULL)
 			break;
