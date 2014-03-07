@@ -265,7 +265,7 @@ bool	CreateLog()
 
 string ExePath()
 {
-	string tempString, filePath;
+	string tempString;
 	char buffer[SEND_BUFFER_SIZE];
 
 	GetModuleFileName(NULL, buffer, SEND_BUFFER_SIZE); // WINDOWS ONLY FUNCTION
@@ -278,7 +278,7 @@ string ExePath()
 		tempString.push_back(buffer[i]);
 	}
 	
-	filePath = tempString.substr(0, tempString.find_last_of("\\"));
+	tempString = tempString.substr(0, tempString.find_last_of("\\"));
 	
 	return filePath;
 }
