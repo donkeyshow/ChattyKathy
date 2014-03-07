@@ -269,7 +269,7 @@ string ExePath()
 	string tempString, filePath;
 	char buffer[MAX_PATH_SIZE];
 
-	GetModuleFileName(NULL, buffer, MAX_PATH_SIZE);
+	GetModuleFileName(NULL, buffer, MAX_PATH_SIZE); // WINDOWS ONLY FUNCTION
 	
 	for (int i = 0; i < MAX_PATH_SIZE; ++i)
 	{
