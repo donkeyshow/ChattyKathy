@@ -1,10 +1,14 @@
-#ifndef _MESSAGE_H_02182014
-#define _MESSAGE_H_02182014
+#ifndef _MESSAGE_H_02242014
+#define _MESSAGE_H_02242014
 
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream> 
+#include <time.h> // time_t, tm, localtime
+#include <iomanip> // time function ( put_time )
+#include <chrono> // system_clock
 
 using namespace std;
 
@@ -25,4 +29,4 @@ public:
 	void	PrintToConsole();
 };
 
-#endif  // !_SONG_H_02182014
+#endif  // !_MESSAGE_H_02242014
