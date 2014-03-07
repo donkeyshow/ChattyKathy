@@ -86,13 +86,14 @@ void main()
 			}
 			break;
 		case 'B':
+		case 'Q':
 			return;
 			break;
 		default:
 			cout << "Not a valid option." << endl;
 			break;
 		}
-	} while (menuChoice != 'B');	
+	} while (menuChoice != 'B' || 'Q');	
 }
 
 int StartTwoWayComm()
