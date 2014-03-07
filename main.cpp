@@ -31,7 +31,6 @@ LinkedList messageList;
 
 const int IPADDR_BUFFER_SIZE = 16;
 const int SEND_BUFFER_SIZE = 1024;
-const int MAX_PATH_SIZE = 4096;
 int g_remoteSendPort = 55551;
 string userColor = "color 9";
 string defaultColor = "color";
@@ -267,9 +266,9 @@ bool	CreateLog()
 string ExePath()
 {
 	string tempString, filePath;
-	char buffer[MAX_PATH_SIZE];
+	char buffer[SEND_BUFFER_SIZE];
 
-	GetModuleFileName(NULL, buffer, MAX_PATH_SIZE); // WINDOWS ONLY FUNCTION
+	GetModuleFileName(NULL, buffer, SEND_BUFFER_SIZE); // WINDOWS ONLY FUNCTION
 	
 	for (int i = 0; i < MAX_PATH_SIZE; ++i)
 	{
